@@ -43,25 +43,37 @@ class pyWavToFlac:
 class pyWavToFlacTrackDlg:
 	
 	def __init__(self):
-		self.gladefile = "wavtoflac.glade"
-		self.track = {
+		self._gladefile = "wavtoflac.glade"
+		self._track = {
 			'artist' : '',
 			'title' : '',
 			'album' : '',
 			'tracknumber' : '',
 			'year' : ''
 		}
+		self._fields = {
+			'txtArtist' : 'artist',
+			'txtTitle' : 'title',
+			'txtAlbum' : 'album',
+			'txtTrackNumber' : 'tracknumber',
+			'txtYear' : 'year'
+		}
 	
 	def run(self, file):
 		
-		self.wTree = gtk.glade.XML(self.gladefile, "trackDlg")
+		self.wTree = gtk.glade.XML(self._gladefile, "trackDlg")
 		self.dlg = self.wTree.get_widget("trackDlg")
 		
 		self.result = self.dlg.run()
+		
+		for idx, widget in enumerate(self._fields):
+			field = self._fields[widget]
+			self._track[field] = self.wTree.get_widget(widget).get_text()
+		
 		self.dlg.destroy()
 		
-		print "RESULT:", self.result
-		return self.result, self.track
+		print self._track
+		return self.result, self._track
 
 class WavScanner(threading.Thread):
 	def __init__(self, dir):
